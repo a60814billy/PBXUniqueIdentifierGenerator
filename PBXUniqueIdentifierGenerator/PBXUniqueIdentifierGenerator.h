@@ -72,4 +72,10 @@ typedef struct __attribute__((packed)) {
 /// @param identifier A 24-character hexadecimal string representing a PBXUniqueIdentifier.
 + (void)restoreGlobalStateFromIdentifier:(NSString *)identifier;
 
+/// Resets the global state to a new random state.
+///
+/// This method re-initializes the global state with current user hash, process ID,
+/// and new random values for sequence and random seed.
++ (void)resetGlobalState;
+
 @end

@@ -48,12 +48,16 @@ uint32_t UserHash(void)
     return hash;
 }
 
-@interface PBXUniqueIdentifierGenerator()
-+ (PBXUniqueIdentifierGeneratorGlobalState *) globalState;
-+ (PBXUniqueIdentifierGeneratorGlobalState *) nextGlobalState;
-@end
-
 @implementation PBXUniqueIdentifierGenerator
+
++ (void)initGlobalState:(PBXUniqueIdentifierGeneratorGlobalState *)state
+{
+    state->userHash = UserHash() & 0xFF;
+    state->pid = [[NSProcessInfo processInfo] processIdentifier];
+    state->randomValue = arc4random() & 0xFFFFFF;
+    state->time = 0;
+    state->sequence = arc4random();
+}
 
 + (PBXUniqueIdentifierGeneratorGlobalState *) globalState
 {
@@ -61,11 +65,7 @@ uint32_t UserHash(void)
     
     if (state == nil) {
         state = (PBXUniqueIdentifierGeneratorGlobalState *) malloc(sizeof(PBXUniqueIdentifier));
-        state->userHash = UserHash() & 0xFF;
-        state->pid = [[NSProcessInfo processInfo] processIdentifier];
-        state->randomValue = arc4random() & 0xFFFFFF;
-        state->time = 0;
-        state->sequence = arc4random();
+        [self initGlobalState:state];
     }
     
     return state;
@@ -134,6 +134,13 @@ uint32_t UserHash(void)
         state->randomValue = CFSwapInt32BigToHost(pbxId.random);
         
         state->firstSequenceForTheTime = state->sequence;
+    }
+}
+
++ (void)resetGlobalState
+{
+    @synchronized (self) {
+        [self initGlobalState:[self globalState]];
     }
 }
 
