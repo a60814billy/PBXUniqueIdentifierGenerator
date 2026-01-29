@@ -80,32 +80,32 @@
 
 - (void)setSequence:(uint16_t)sequence
 {
-    cIdentifier->sequence = sequence;
+    cIdentifier->sequence = CFSwapInt16HostToBig(sequence);
 }
 
 - (uint16_t)sequence
 {
-    return cIdentifier->sequence;
+    return CFSwapInt16BigToHost(cIdentifier->sequence);
 }
 
 - (void)setTime:(uint32_t)time
 {
-    cIdentifier->time = time;
+    cIdentifier->time = CFSwapInt32HostToBig(time);
 }
 
 - (uint32_t)time
 {
-    return cIdentifier->time;
+    return CFSwapInt32BigToHost(cIdentifier->time);
 }
 
 - (void)setRandom:(uint32_t)random
 {
-    cIdentifier->random = random;
+    cIdentifier->random = CFSwapInt32HostToBig(random);
 }
 
 - (uint32_t)random
 {
-    return cIdentifier->random;
+    return CFSwapInt32BigToHost(cIdentifier->random);
 }
 
 - (const uint8_t*) bytes

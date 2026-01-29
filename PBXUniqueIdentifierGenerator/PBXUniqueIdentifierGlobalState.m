@@ -123,9 +123,9 @@ uint32_t UserHash(void)
     
     identifier.userHash = globalState->userHash;
     identifier.pid = globalState->pid;
-    identifier.sequence = CFSwapInt16HostToBig(globalState->sequence);
-    identifier.time = CFSwapInt32HostToBig(globalState->time);
-    identifier.random = CFSwapInt32HostToBig(globalState->randomValue);
+    identifier.sequence = globalState->sequence;
+    identifier.time = globalState->time;
+    identifier.random = globalState->randomValue;
     
     return identifier;
 }
@@ -149,9 +149,9 @@ uint32_t UserHash(void)
     @synchronized (self) {
         globalState->userHash = identifier.userHash;
         globalState->pid = identifier.pid;
-        globalState->sequence = CFSwapInt16BigToHost(identifier.sequence);
-        globalState->time = CFSwapInt32BigToHost(identifier.time);
-        globalState->randomValue = CFSwapInt32(identifier.random);
+        globalState->sequence = identifier.sequence;
+        globalState->time = identifier.time;
+        globalState->randomValue = identifier.random;
         
         globalState->firstSequenceForTheTime = identifier.sequence;
     }
