@@ -108,4 +108,33 @@ uint32_t UserHash(void)
     return identifier;
 }
 
++ (void)restoreGlobalStateFromIdentifier:(NSString *)identifier
+{
+    if (identifier.length != 24) return;
+
+    PBXUniqueIdentifier pbxId;
+    uint8_t *bytes = (uint8_t *)&pbxId;
+    
+    NSUInteger strLen = [identifier lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    const char *cStr = [[identifier lowercaseString] UTF8String];
+    
+    for (int i = 0; i < sizeof(PBXUniqueIdentifier); i++) {
+        if (i * 2 + 1 < strLen) {
+            sscanf(cStr + (i*2), "%2hhx", &bytes[i]);
+        }
+    }
+
+    @synchronized (self) {
+        PBXUniqueIdentifierGeneratorGlobalState *state = [self globalState];
+        
+        state->userHash = pbxId.userHash;
+        state->pid = pbxId.pid;
+        state->sequence = CFSwapInt16BigToHost(pbxId.sequence);
+        state->time = CFSwapInt32BigToHost(pbxId.time);
+        state->randomValue = CFSwapInt32BigToHost(pbxId.random);
+        
+        state->firstSequenceForTheTime = state->sequence;
+    }
+}
+
 @end

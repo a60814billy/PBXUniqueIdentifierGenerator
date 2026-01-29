@@ -63,4 +63,13 @@ typedef struct __attribute__((packed)) {
 /// @return A `PBXUniqueIdentifier` struct containing the generated identifier components.
 + (PBXUniqueIdentifier)nextIdentifier;
 
+/// Restores the global state from a given identifier string.
+///
+/// This method parses the provided 24-character hexadecimal identifier string
+/// and updates the internal global state to match the values found in the identifier.
+/// The next generated identifier will be based on this restored state.
+///
+/// @param identifier A 24-character hexadecimal string representing a PBXUniqueIdentifier.
++ (void)restoreGlobalStateFromIdentifier:(NSString *)identifier;
+
 @end
