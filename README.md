@@ -10,6 +10,8 @@ This project was inspired by the detailed analysis in the blog post [PBXProj Ide
 
 The core logic of this generator is derived from reverse-engineering the `DevToolsSupport.framework` and `DevToolCore.framework` found in **Xcode 26.2.0**. It faithfully recreates the identifier generation process using native Objective-C.
 
+> **Note**: In the original implementation, the random seed was derived from `hostid` and the current time. In this implementation, we use `arc4random()` directly for better randomness and simplicity.
+
 ## Features
 
 - Generates 24 hex characters identifiers consistent with Xcode's internal algorithm.
