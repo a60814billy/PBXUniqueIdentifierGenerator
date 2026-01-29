@@ -11,8 +11,8 @@ int main(int argc, const char * argv[]) {
             [PBXUniqueIdentifierGenerator restoreGlobalStateFromIdentifier:baseId];
         }
 
-        NSString *newObjId = [[NSString stringWithHexadecimalRepresentationOfUniqueIdentifier] uppercaseString];
-        printf("%s\n", [newObjId UTF8String]);
+        NSString *newObjId = [NSString stringWithHexadecimalRepresentationOfUniqueIdentifier];
+        printf("%s\n", [newObjId cStringUsingEncoding:NSUTF8StringEncoding]);
     }
     return EXIT_SUCCESS;
 }

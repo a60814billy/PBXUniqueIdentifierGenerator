@@ -1,54 +1,14 @@
 #import <Foundation/Foundation.h>
 
-/// Calculates a hash based on the current user's name.
-///
-/// This function computes a 32-bit hash value derived from the current user's login name.
-/// It uses a specific packing table to map characters to values before hashing.
-///
-/// @return A 32-bit unsigned integer representing the user hash.
-uint32_t UserHash(void);
+@class PBXUniqueIdentifier;
+@class PBXUniqueIdentifierGlobalState;
 
-/// Represents the global state used for generating unique identifiers.
+/// A static generator class for creating Xcode-compatible unique identifiers (PBXObjectIDs).
 ///
-/// This structure maintains the state needed to ensure uniqueness across calls,
-/// including user identity, process ID, random values, timestamps, and sequence numbers.
-typedef struct __attribute__((packed)) {
-    /// The hash of the current user.
-    uint8_t  userHash;
-    /// The process identifier (PID) of the current process.
-    uint8_t  pid;
-    /// A random seed value (first byte always 0).
-    uint32_t randomValue;
-    /// The last recorded timestamp.
-    uint32_t time;
-    /// The current sequence number.
-    uint16_t sequence;
-    /// The first sequence number recorded for the current timestamp.
-    uint16_t firstSequenceForTheTime;
-} PBXUniqueIdentifierGeneratorGlobalState;
-
-/// Represents a generated PBX unique identifier structure.
-///
-/// This structure holds the components that make up the unique identifier used in Xcode project files.
-/// It is packed to match the binary layout of the identifier.
-typedef struct __attribute__((packed)) {
-    /// The hash of the user who generated the identifier.
-    uint8_t  userHash;
-    /// The process identifier (PID) where the identifier was generated.
-    uint8_t  pid;
-    /// The sequence number of the identifier.
-    uint16_t sequence;
-    /// The timestamp when the identifier was generated.
-    uint32_t time;
-    /// A random value to ensure uniqueness (first byte always 0).
-    uint32_t random;
-} PBXUniqueIdentifier;
-
-/// A generator for creating Xcode-compatible unique identifiers (PBXObjectIDs).
-///
-/// `PBXUniqueIdentifierGenerator` produces unique identifiers similar to those used by Xcode
-/// for objects in `project.pbxproj` files. These identifiers are 96-bit (12-byte) values
-/// constructed from user info, process info, timestamps, sequences, and randomness.
+/// `PBXUniqueIdentifierGenerator` manages the global state and orchestration required to produce
+/// unique identifiers similar to those used by Xcode for objects in `project.pbxproj` files.
+/// These identifiers are 96-bit (12-byte) values constructed from user info, process info,
+/// timestamps, sequences, and randomness.
 ///
 /// ## Related Articles
 /// - <doc:PBXObject_Unique_Identifier_Generation_Algorithm>
@@ -56,26 +16,26 @@ typedef struct __attribute__((packed)) {
 
 /// Generates the next unique identifier.
 ///
-/// This method updates the internal global state and returns a new `PBXUniqueIdentifier`.
-/// It ensures that subsequent calls produce different identifiers by incrementing the sequence
-/// and updating the timestamp if necessary.
+/// This method accesses the shared global state, updates it (incrementing sequence, updating time),
+/// and returns a new identifier based on that state. It is thread-safe.
 ///
-/// @return A `PBXUniqueIdentifier` struct containing the generated identifier components.
-+ (PBXUniqueIdentifier)nextIdentifier;
+/// @return A `PBXUniqueIdentifier` object containing the generated identifier components.
++ (PBXUniqueIdentifier *)nextIdentifier;
 
 /// Restores the global state from a given identifier string.
 ///
 /// This method parses the provided 24-character hexadecimal identifier string
 /// and updates the internal global state to match the values found in the identifier.
-/// The next generated identifier will be based on this restored state.
+/// The next generated identifier will continue from this restored state, which is useful
+/// for maintaining sequence continuity or debugging.
 ///
 /// @param identifier A 24-character hexadecimal string representing a PBXUniqueIdentifier.
 + (void)restoreGlobalStateFromIdentifier:(NSString *)identifier;
 
-/// Resets the global state to a new random state.
+/// Resets the global state to a new random configuration.
 ///
-/// This method re-initializes the global state with current user hash, process ID,
-/// and new random values for sequence and random seed.
+/// This method re-initializes the global state with the current user hash, process ID,
+/// and generates new random values for the sequence and random seed.
 + (void)resetGlobalState;
 
 @end
