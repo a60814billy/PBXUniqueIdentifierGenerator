@@ -17,7 +17,7 @@ typedef struct __attribute__((packed)) {
     uint8_t  userHash;
     /// The process identifier (PID) of the current process.
     uint8_t  pid;
-    /// A random seed value.
+    /// A random seed value (first byte always 0).
     uint32_t randomValue;
     /// The last recorded timestamp.
     uint32_t time;
@@ -40,7 +40,7 @@ typedef struct __attribute__((packed)) {
     uint16_t sequence;
     /// The timestamp when the identifier was generated.
     uint32_t time;
-    /// A random value to ensure uniqueness.
+    /// A random value to ensure uniqueness (first byte always 0).
     uint32_t random;
 } PBXUniqueIdentifier;
 

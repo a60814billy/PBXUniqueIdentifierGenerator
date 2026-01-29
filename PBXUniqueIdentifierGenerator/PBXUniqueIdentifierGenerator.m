@@ -69,7 +69,7 @@ uint32_t UserHash(void)
         state = (PBXUniqueIdentifierGeneratorGlobalState *) malloc(sizeof(PBXUniqueIdentifier));
         state->userHash = UserHash() & 0xFF;
         state->pid = [[NSProcessInfo processInfo] processIdentifier];
-        state->randomValue = arc4random();
+        state->randomValue = arc4random() & 0xFFFFFF;
         state->time = 0;
         state->sequence = arc4random();
     }
@@ -109,7 +109,7 @@ uint32_t UserHash(void)
     identifier.pid = globalState->pid;
     identifier.sequence = CFSwapInt16HostToBig(globalState->sequence);
     identifier.time = CFSwapInt32HostToBig(globalState->time);
-    identifier.random = globalState->randomValue;
+    identifier.random = CFSwapInt32HostToBig(globalState->randomValue);
     
     return identifier;
 }
