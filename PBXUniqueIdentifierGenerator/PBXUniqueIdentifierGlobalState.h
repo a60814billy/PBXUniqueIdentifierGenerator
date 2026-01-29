@@ -1,10 +1,3 @@
-//
-//  PBXUniqueIdentifierGlobalState.h
-//  PBXUniqueIdentifierGenerator
-//
-//  Created by Raccoon on 2026/1/30.
-//
-
 #import <Foundation/Foundation.h>
 
 /// The structure representing the raw global state data.

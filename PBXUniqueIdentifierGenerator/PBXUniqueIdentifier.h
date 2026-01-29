@@ -1,10 +1,3 @@
-//
-//  PBXUniqueIdentifier.h
-//  PBXUniqueIdentifierGenerator
-//
-//  Created by Raccoon on 2026/1/30.
-//
-
 #import <Foundation/Foundation.h>
 
 /// The raw structure representing the packed PBX unique identifier.

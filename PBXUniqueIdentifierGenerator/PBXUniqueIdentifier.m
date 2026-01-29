@@ -1,10 +1,3 @@
-//
-//  PBXUniqueIdentifier.m
-//  PBXUniqueIdentifierGenerator
-//
-//  Created by Raccoon on 2026/1/30.
-//
-
 #import "PBXUniqueIdentifier.h"
 
 @implementation PBXUniqueIdentifier

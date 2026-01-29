@@ -1,10 +1,3 @@
-//
-//  PBXGlobalState.m
-//  PBXUniqueIdentifierGenerator
-//
-//  Created by Raccoon on 2026/1/30.
-//
-
 #import "PBXUniqueIdentifierGlobalState.h"
 #import "PBXUniqueIdentifier.h"
 
