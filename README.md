@@ -45,7 +45,7 @@ NSString *newId = [NSString stringWithHexadecimalRepresentationOfUniqueIdentifie
 If you need to generate a sequence of IDs starting after a known ID:
 
 ```objective-c
-[PBXUniqueIdentifierGenerator restoreGlobalStateFromIdentifier:@"96C33B1234567890ABCDEF12"];
+[PBXUniqueIdentifierGenerator restoreGlobalStateFromIdentifier:@"A74192E32F2C0D8F0017B677"];
 ```
 
 ## Algorithm Details
