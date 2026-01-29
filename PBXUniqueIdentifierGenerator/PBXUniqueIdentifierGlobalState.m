@@ -61,7 +61,7 @@ uint32_t UserHash(void)
 
 @implementation PBXUniqueIdentifierGlobalState
 {
-    CPBXUniqueIdentifierGlobalState *globalState;
+    CPBXUniqueIdentifierGlobalState globalState;
 }
 
 #pragma mark -
@@ -71,19 +71,9 @@ uint32_t UserHash(void)
 {
     if (self = [super init])
     {
-        globalState = malloc(sizeof(CPBXUniqueIdentifierGlobalState));
         [self resetState];
     }
     return self;
-}
-
--(void)dealloc
-{
-    if (globalState != NULL)
-    {
-        free(globalState);
-        globalState = NULL;
-    }
 }
 
 #pragma mark -
@@ -93,17 +83,17 @@ uint32_t UserHash(void)
 {
     @synchronized (self) {
         // increse sequence
-        globalState->sequence++;
+        globalState.sequence++;
         
         uint32_t currentTime = [NSDate timeIntervalSinceReferenceDate];
-        if (currentTime > globalState->time) {
-            globalState->time = currentTime;
-            globalState->firstSequenceForTheTime = globalState->sequence;
+        if (currentTime > globalState.time) {
+            globalState.time = currentTime;
+            globalState.firstSequenceForTheTime = globalState.sequence;
         } else {
             // time not change, but sequence round to first seq at the time
             // force increse time tick
-            if (globalState->sequence == globalState->firstSequenceForTheTime) {
-                globalState->time++;
+            if (globalState.sequence == globalState.firstSequenceForTheTime) {
+                globalState.time++;
             }
         }
     }
@@ -114,11 +104,11 @@ uint32_t UserHash(void)
 {
     PBXUniqueIdentifier *identifier = [[PBXUniqueIdentifier alloc] init];
     
-    identifier.userHash = globalState->userHash;
-    identifier.pid = globalState->pid;
-    identifier.sequence = globalState->sequence;
-    identifier.time = globalState->time;
-    identifier.random = globalState->randomValue;
+    identifier.userHash = globalState.userHash;
+    identifier.pid = globalState.pid;
+    identifier.sequence = globalState.sequence;
+    identifier.time = globalState.time;
+    identifier.random = globalState.randomValue;
     
     return identifier;
 }
@@ -126,27 +116,27 @@ uint32_t UserHash(void)
 - (void)resetState
 {
     @synchronized (self) {
-        globalState->userHash = UserHash() & 0xFF;
-        globalState->pid = [[NSProcessInfo processInfo] processIdentifier];
-        globalState->time = [NSDate timeIntervalSinceReferenceDate];
+        globalState.userHash = UserHash() & 0xFF;
+        globalState.pid = [[NSProcessInfo processInfo] processIdentifier];
+        globalState.time = [NSDate timeIntervalSinceReferenceDate];
 
-        srandom(globalState->pid << 16 ^ globalState->time);
+        srandom(globalState.pid << 16 ^ globalState.time);
         
-        globalState->randomValue = random() & 0xFFFFFF;
-        globalState->sequence = random();
+        globalState.randomValue = random() & 0xFFFFFF;
+        globalState.sequence = random();
     }
 }
 
 - (void)restoreFromIdentifier:(PBXUniqueIdentifier *) identifier
 {
     @synchronized (self) {
-        globalState->userHash = identifier.userHash;
-        globalState->pid = identifier.pid;
-        globalState->sequence = identifier.sequence;
-        globalState->time = identifier.time;
-        globalState->randomValue = identifier.random;
+        globalState.userHash = identifier.userHash;
+        globalState.pid = identifier.pid;
+        globalState.sequence = identifier.sequence;
+        globalState.time = identifier.time;
+        globalState.randomValue = identifier.random;
         
-        globalState->firstSequenceForTheTime = identifier.sequence;
+        globalState.firstSequenceForTheTime = globalState.sequence;
     }
 }
 
@@ -154,32 +144,32 @@ uint32_t UserHash(void)
 
 - (uint8_t)userHash
 {
-    return globalState->userHash;
+    return globalState.userHash;
 }
 
 - (uint8_t)pid
 {
-    return globalState->pid;
+    return globalState.pid;
 }
 
 - (uint32_t)randomValue
 {
-    return globalState->randomValue;
+    return globalState.randomValue;
 }
 
 - (uint32_t)time
 {
-    return globalState->time;
+    return globalState.time;
 }
 
 - (uint16_t)sequence
 {
-    return globalState->sequence;
+    return globalState.sequence;
 }
 
 - (uint16_t)firstSequenceForTheTime
 {
-    return globalState->firstSequenceForTheTime;
+    return globalState.firstSequenceForTheTime;
 }
 
 @end
