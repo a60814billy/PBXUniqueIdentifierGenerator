@@ -38,6 +38,10 @@ uint32_t UserHash(void)
     uint32_t hash = 0;
     NSString *userName = NSUserName();
 
+    if (userName == nil || userName.length == 0) {
+        return hash;
+    }
+
     uint8_t shift = 0;
     for (NSUInteger i = 0; i < userName.length; i++) {
         unichar c = [userName characterAtIndex:i];
@@ -131,9 +135,12 @@ uint32_t UserHash(void)
     @synchronized (self) {
         globalState->userHash = UserHash() & 0xFF;
         globalState->pid = [[NSProcessInfo processInfo] processIdentifier];
-        globalState->randomValue = arc4random() & 0xFFFFFF;
         globalState->time = [NSDate timeIntervalSinceReferenceDate];
-        globalState->sequence = arc4random();
+
+        srandom(globalState->pid << 16 ^ globalState->time);
+        
+        globalState->randomValue = random() & 0xFFFFFF;
+        globalState->sequence = random();
     }
 }
 
