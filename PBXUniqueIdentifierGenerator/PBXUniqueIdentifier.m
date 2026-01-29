@@ -2,7 +2,15 @@
 
 @implementation PBXUniqueIdentifier
 {
-    CPBXUniqueIdentifier *cIdentifier;
+    NSMutableData *identifierData;
+}
+
+#pragma mark -
+#pragma mark Internal
+
+- (CPBXUniqueIdentifier *)cIdentifier
+{
+    return (CPBXUniqueIdentifier *)[identifierData mutableBytes];
 }
 
 #pragma mark -
@@ -11,7 +19,7 @@
 {
     if (self = [super init])
     {
-        cIdentifier = calloc(1, sizeof(CPBXUniqueIdentifier));
+        identifierData = [[NSMutableData alloc] initWithLength:sizeof(CPBXUniqueIdentifier)];
     }
     return self;
 }
@@ -22,8 +30,8 @@
     
     if (self = [super init])
     {
-        CPBXUniqueIdentifier *pbxId = malloc(sizeof(CPBXUniqueIdentifier));
-        uint8_t *bytes = (uint8_t *)pbxId;
+        identifierData = [[NSMutableData alloc] initWithLength:sizeof(CPBXUniqueIdentifier)];
+        uint8_t *bytes = (uint8_t *)[identifierData mutableBytes];
         
         NSUInteger strLen = [identifier lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
         const char *cStr = [[identifier lowercaseString] UTF8String];
@@ -33,77 +41,66 @@
                 sscanf(cStr + (i*2), "%2hhx", &bytes[i]);
             }
         }
-        
-        cIdentifier = pbxId;
     }
     return self;
 }
-
-- (void)dealloc
-{
-    if (cIdentifier != NULL) {
-        free(cIdentifier);
-        cIdentifier = NULL;
-    }
-}
-
 
 #pragma mark -
 #pragma mark Properties
 
 - (void)setUserHash:(uint8_t)userHash
 {
-    cIdentifier->userHash = userHash;
+    self.cIdentifier->userHash = userHash;
 }
 
 - (uint8_t)userHash
 {
-    return cIdentifier->userHash;
+    return self.cIdentifier->userHash;
 }
 
 - (void)setPid:(uint8_t)pid
 {
-    cIdentifier->pid = pid;
+    self.cIdentifier->pid = pid;
 }
 
 - (uint8_t)pid
 {
-    return cIdentifier->pid;
+    return self.cIdentifier->pid;
 }
 
 - (void)setSequence:(uint16_t)sequence
 {
-    cIdentifier->sequence = CFSwapInt16HostToBig(sequence);
+    self.cIdentifier->sequence = CFSwapInt16HostToBig(sequence);
 }
 
 - (uint16_t)sequence
 {
-    return CFSwapInt16BigToHost(cIdentifier->sequence);
+    return CFSwapInt16BigToHost(self.cIdentifier->sequence);
 }
 
 - (void)setTime:(uint32_t)time
 {
-    cIdentifier->time = CFSwapInt32HostToBig(time);
+    self.cIdentifier->time = CFSwapInt32HostToBig(time);
 }
 
 - (uint32_t)time
 {
-    return CFSwapInt32BigToHost(cIdentifier->time);
+    return CFSwapInt32BigToHost(self.cIdentifier->time);
 }
 
 - (void)setRandom:(uint32_t)random
 {
-    cIdentifier->random = CFSwapInt32HostToBig(random);
+    self.cIdentifier->random = CFSwapInt32HostToBig(random);
 }
 
 - (uint32_t)random
 {
-    return CFSwapInt32BigToHost(cIdentifier->random);
+    return CFSwapInt32BigToHost(self.cIdentifier->random);
 }
 
 - (const uint8_t*) bytes
 {
-    return (const uint8_t *)cIdentifier;
+    return (const uint8_t *)[identifierData bytes];
 }
 
 #pragma mark -
