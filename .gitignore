@@ -8,6 +8,9 @@ xcuserdata/
 ## this project not use workspace
 project.xcworkspace/
 
+## build generated
+build/
+
 ## Obj-C/Swift specific
 *.hmap
 
